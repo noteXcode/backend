@@ -1,7 +1,9 @@
+
+
 module.exports = (connection, sequelize) => {
     const Post = connection.define("post", {
         postId: {
-            type: sequelize.UUID
+            type: sequelize.INT
         },
         postTitle:{
             type:sequelize.STRING
