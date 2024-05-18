@@ -3,10 +3,11 @@
 module.exports = (connection, sequelize) => {
     const Task = connection.define("task", {
         taskId: {
-            type: sequelize.UUID
+            type: sequelize.UUID,
+            primaryKey:true
         },
         taskUserId: {
-            type: sequelize.INT
+            type: sequelize.INTEGER
         },
         taskBody:{
             type:sequelize.TEXT

@@ -3,7 +3,8 @@
 module.exports = (connection, sequelize) => {
     const Skill = connection.define("skill", {
        skillId:{
-        type:sequelize.UUID
+        type:sequelize.UUID,
+        primaryKey:true
        },
        skillName:{
         type:sequelize.STRING,

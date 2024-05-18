@@ -3,7 +3,8 @@
 module.exports = (connection, sequelize) => {
     const Role = connection.define("role", {
        roleId:{
-        type:sequelize.UUID
+        type:sequelize.UUID,
+        primaryKey:true
        },
        roleName:{
         type: sequelize.STRING,

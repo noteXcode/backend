@@ -3,7 +3,8 @@
 module.exports = (connection, sequelize) => {
     const Tag = connection.define("tag", {
         tagId:{
-            type:sequelize.UUID
+            type:sequelize.UUID,
+            primaryKey:true
         },
         tagText:{
             type:sequelize.TEXT

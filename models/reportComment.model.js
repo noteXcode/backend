@@ -3,13 +3,14 @@
 module.exports = (connection, sequelize) => {
     const ReportComment = connection.define("reportComment", {
         RCid: {
-            type: sequelize.UUID
+            type: sequelize.UUID,
+            primaryKey:true
         },
         RCcommentId: {
-            type: sequelize.INT
+            type: sequelize.INTEGER
         },
         RCuserId:{
-            type:sequelize.INT
+            type:sequelize.INTEGER
         },
         RCtext:{
             type:sequelize.TEXT

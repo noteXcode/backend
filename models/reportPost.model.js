@@ -3,13 +3,14 @@
 module.exports = (connection, sequelize) => {
     const ReportPost = connection.define("reportPost", {
         RPid:{
-            type:sequelize.UUID
+            type:sequelize.UUID,
+            primaryKey:true
         },
         RPpostId:{
-            type:sequelize.INT
+            type:sequelize.INTEGER
         },
         RPuserId:{
-            type:sequelize.INT
+            type:sequelize.INTEGER
         },
         RPtext:{
             type:sequelize.STRING

@@ -3,7 +3,8 @@
 module.exports = (connection, sequelize) => {
     const Post = connection.define("post", {
         postId: {
-            type: sequelize.INT
+            type: sequelize.INTEGER,
+            primaryKey: true
         },
         postTitle:{
             type:sequelize.STRING
@@ -21,7 +22,7 @@ module.exports = (connection, sequelize) => {
             type:sequelize.TINYINT
         },
         postReferenceId:{
-            type:sequelize.INT
+            type:sequelize.INTEGER
         }
     }
     )

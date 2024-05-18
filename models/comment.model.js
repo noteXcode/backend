@@ -3,16 +3,17 @@
 module.exports = (connection, sequelize) => {
     const Comment = connection.define("comment", {
         commentId:{
-            type:sequelize.INT
+            type:sequelize.INTEGER,
+            primaryKey:true
         },
         commentUserId:{
-            type:sequelize.INT,
+            type:sequelize.INTEGER,
         },
         commentPostId:{
-            type:sequelize.INT
+            type:sequelize.INTEGER
         },
         commentReferenceId:{
-            type:sequelize.INT
+            type:sequelize.INTEGER
         },
         commentBody:{
             type:sequelize.TEXT

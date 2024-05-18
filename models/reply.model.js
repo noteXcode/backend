@@ -3,10 +3,11 @@
 module.exports = (connection, sequelize) => {
     const Reply = connection.define("reply", {
         replyId: {
-            type: sequelize.UUID
+            type: sequelize.UUID,
+            primaryKey:true
         },
         replyUserId: {
-            type: sequelize.INT
+            type: sequelize.INTEGER
         },
         replyBody:{
             type:sequelize.TEXT

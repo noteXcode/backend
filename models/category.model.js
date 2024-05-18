@@ -1,12 +1,13 @@
 
 
 module.exports = (connection, sequelize) => {
-    const Category = connection.define("tag", {
+    const Category = connection.define("category", {
         categoryId:{
-            type:sequelize.UUID
+            type:sequelize.UUID,
+            primaryKey:true
         },
         categoryUserId:{
-            type:sequelize.INT,
+            type:sequelize.INTEGER,
             unique: {
                 args: true,
                 msg: 'این  نام قبلا استفاده شده است'

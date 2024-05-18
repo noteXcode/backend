@@ -3,7 +3,8 @@
 module.exports = (connection, sequelize) => {
     const User = connection.define("user", {
         userId: {
-            type: sequelize.UUID
+            type: sequelize.UUID,
+            primaryKey:true
         },
         userEmail: {
             type: sequelize.STRING,
