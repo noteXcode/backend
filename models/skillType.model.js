@@ -16,6 +16,19 @@ module.exports = (connection, sequelize) => {
         STdsc:{
             type:sequelize.STRING
         }
+    },{
+        indexes: [
+            {
+                using:'BTREE',
+                field:['STname']
+            },
+        ],
+        hooks: {
+            beforeCreate:async(_name)=> {
+                _name.STname=_name.STname.toLowerCase()
+            },
+            
+        }
     }
     )
     return SkillType

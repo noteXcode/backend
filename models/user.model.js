@@ -4,7 +4,7 @@ module.exports = (connection, sequelize) => {
     const User = connection.define("user", {
         userId: {
             type: sequelize.UUID,
-            primaryKey:true
+            primaryKey: true
         },
         userEmail: {
             type: sequelize.STRING,
@@ -24,7 +24,7 @@ module.exports = (connection, sequelize) => {
             type: sequelize.STRING
         },
         userIsActive: {
-            type: sequelize.TINYINT
+            type: sequelize.BOOLEAN
         },
         userFirstName: {
             type: sequelize.STRING
@@ -61,6 +61,35 @@ module.exports = (connection, sequelize) => {
         },
         userProfile: {
             type: sequelize.TEXT
+        }
+    }, {
+        indexes: [
+            {
+                using:'BTREE',
+                field:['userEmail']
+            },
+            {
+                using:'BTREE',
+                field:['userJobTitle']
+            },
+            {
+                using:'BTREE',
+                field:['userName']
+            },
+            {
+                using:'BTREE',
+                field:['userCompany']
+            },
+            {
+                using:'BTREE',
+                field:['userProfile']
+            },
+        ],
+        hooks: {
+            beforeCreate:async(_email)=> {
+                _email.userEmail=_email.userEmail.toLowerCase()
+            },
+            
         }
     }
     )
