@@ -17,9 +17,9 @@ app.use(cors(origins))
 
 // OPERTAIONS (MAKE TABLES AND...)*****
 db.connection.sync({
-    alter:true,
+    // alter:true,
 	// { drop: false },
-    // force : true
+    force : true
 }).then(async ()=>{
     // await initiall()
 }).catch((_error)=>{

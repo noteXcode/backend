@@ -2,33 +2,36 @@
 
 module.exports = (connection, sequelize) => {
     const SkillType = connection.define("skillType", {
-        STid:{
+        ST_id:{
             type:sequelize.UUID,
             primaryKey:true
         },
-        STname:{
+        ST_name:{
             type:sequelize.STRING,
             unique: {
                 args: true,
-                msg: 'این  نام قبلا استفاده شده است'
-            }
+                msg: 'this name has already been used'
+            },
+            set(value) {
+                this.setDataValue('ST_name', value.trim().toLowerCase())
+            },
+
         },
-        STdsc:{
+        ST_dsc:{
             type:sequelize.STRING
         }
     },{
         indexes: [
             {
                 using:'BTREE',
-                field:['STname']
+                fields:['ST_name']
+            },
+            {
+                using:'BTREE',
+                fields:['ST_id']
             },
         ],
-        hooks: {
-            beforeCreate:async(_name)=> {
-                _name.STname=_name.STname.toLowerCase()
-            },
-            
-        }
+        
     }
     )
     return SkillType

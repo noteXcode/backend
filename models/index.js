@@ -41,144 +41,203 @@ db.reply = require('./reply.model')(Connection, Sequelize);
 // USER && ROLE *****
 db.user.belongsToMany(db.role, {
     through: 'userRole',
-    foreignKey: 'roleId',
-    as: 'userRoles'
+    foreignKey: 'UR_userId',
+    as: 'userRoles',
+    timestamps: false,
 });
 db.role.belongsToMany(db.user, {
     through: 'userRole',
-    foreignKey: 'userId',
+    foreignKey: 'UR_roleId',
     as: 'users'
 });
 
 
-// USER && USER *****
+// USER && USER (FOLLOW)*****
 db.user.belongsToMany(db.user, {
     through: 'follow',
     foreignKey: 'followUserId',
-    as:'follows'
+    as: 'follows'
 })
 db.user.belongsToMany(db.user, {
     through: 'follow',
     foreignKey: 'followFollowerId',
-    as:'followers'
+    as: 'followers'
 })
 
 
-//USER && POST *****
-db.post.belongsToMany(db.user, {
-    through:'postMention',
-    foreignKey: 'PMuserId',
-    as:'posts'
+//POST && USER ******
+db.user.hasMany(db.post,{
+    foreignKey:"postUserId",
+    as:"userPost"
 })
-db.user.belongsToMany(db.post, {
-    through:'postMention',
-    foreignKey: 'PMpostId',
-    as:'userPosts'
+db.post.belongsTo(db.user,{
+    foreignKey:"postUserId",
+    as:"postUser"
 })
 
 
-//USER && COMMENT *****
+//SKILL AND SKILLVERSION *****
+db.skill.hasMany(db.skillVersion,{
+    foreignKey:"SV_skillId",
+    as:"skills"
+})
+db.skillVersion.belongsTo(db.skill,{
+    foreignKey:"SV_skillId",
+    as:"skillVersions"
+})
+
+
+//TASK AND USER *****
+db.user.hasMany(db.task,{
+    foreignKey:"taskUserId",
+    as:"userTasks"
+})
+db.task.belongsTo(db.user,{
+    foreignKey:"taskUserId",
+    as:"taskUser"
+})
+
+
+//REPLY AND USER *****
+db.user.hasMany(db.reply,{
+    foreignKey:"replyUserId",
+    as:"userReply"
+})
+db.reply.belongsTo(db.user,{
+    foreignKey:"replyUserId",
+    as:"replies"
+})
+
+
+//USER && COMMENT (COMMENT MENTION)*****
 db.comment.belongsToMany(db.user, {
-    through:'commentMention',
-    foreignKey:'CMuserId',
+    through: 'commentMention',
+    foreignKey: 'CM_commentId',
+    as: 'commentUsers'
 })
 db.user.belongsToMany(db.comment, {
-    through:'commentMention',
-    foreignKey:'userComments',
+    through: 'commentMention',
+    foreignKey: 'CM_userId',
+    as: 'usersComment'
 })
 
 
-//USER && COMMENT *****
+
+//USER && COMMENT (REPORT COMMENT)*****
 db.comment.belongsToMany(db.user, {
-    through:'reportComment'
+    through: 'reportComment',
+    foreignKey: 'RC_commentId',
+    as: 'rpCommentUsers'
 })
 db.user.belongsToMany(db.comment, {
-    through:'reportComment'
+    through: 'reportComment',
+    foreignKey: 'RC_userId',
+    as: 'rpUserComments'
 })
 
 
-//USER && POST *****
+//USER && POST (REPORT POST)*****
 db.post.belongsToMany(db.user, {
-    through:'reportPost'
+    through: 'reportPost',
+    foreignKey: 'RP_postId',
+    as: 'rpPostUsers',
 })
 db.user.belongsToMany(db.post, {
-    through:'reportPost'
+    through: 'reportPost',
+    foreignKey: 'RP_userId',
+    onDelete: 'NO ACTION',
+    as: 'rpUserPosts'
 })
 
-
-//USER && POST *****
+//USER && POST (POST MENTION)*****
 db.post.belongsToMany(db.user, {
-    through:'postLike',
-    foreignKey:'PLuserId',
-    as:'pUsers'
+    through: 'postMention',
+    foreignKey: 'PM_postId',
+    as: 'mentionUsers',
 })
 db.user.belongsToMany(db.post, {
-    through:'postLike',
-    foreignKey:'PLpostId',
-    as:'userlikes'
+    through: 'postMention',
+    foreignKey: 'PM_userId',
+    as: 'mentionPosts',
+    onDelete: 'NO ACTION',
 })
 
-
-//USER && POST *****
+//USER && POST (POST LIKE) *****
 db.post.belongsToMany(db.user, {
-    through:'postSave',
-    foreignKey:'PSuserId',
-    as:'sUser'
+    through: 'postLike',
+    foreignKey: 'PL_postId',
+    as: 'postUsers',
 })
 db.user.belongsToMany(db.post, {
-    through:'postSave',
-    foreignKey:'PSpostId',
-    as:'userSaves'
+    through: 'postLike',
+    foreignKey: 'PL_userId',
+    as: 'userLikePost',
+    onDelete: 'NO ACTION',
 })
 
-//USER && POST *****
+
+//USER && POST (POST SAVE) *****
 db.post.belongsToMany(db.user, {
-    through:'postView',
-    foreignKey:'PVuserId',
-    as:'vUsers'
+    through: 'postSave',
+    foreignKey: 'PS_postId',
+    as: 'postSaveUser',
 })
 db.user.belongsToMany(db.post, {
-    through:'postView',
-    foreignKey:'PVpostId',
-    as:'userViews'
+    through: 'postSave',
+    foreignKey: 'PS_userId',
+    as: 'userSavePosts',
+    onDelete: 'NO ACTION',
+})
+
+//USER && POST (POST VIEW) *****
+db.post.belongsToMany(db.user, {
+    through: 'postView',
+    foreignKey: 'PV_postId',
+    as: 'vUsers'
+})
+db.user.belongsToMany(db.post, {
+    through: 'postView',
+    foreignKey: 'PV_userId',
+    onDelete: 'NO ACTION',
+    as: 'userViews'
 })
 
 
 //POST && CATEGORY *****
 db.post.belongsToMany(db.category, {
-    through:'postCategory',
-    foreignKey:'PcatCategoryId',
-    as:'categories'
+    through: 'postCategory',
+    foreignKey: 'PcatPostId',
+    as: 'categories'
 })
 db.category.belongsToMany(db.post, {
-    through:'postCategory',
-    foreignKey:'PcatPostId',
-    as:'catPosts'
+    through: 'postCategory',
+    foreignKey: 'PcatCategoryId',
+    as: 'catPosts'
 })
 
 //POST && TAG *****
 db.post.belongsToMany(db.tag, {
-    through:'postTag',
-    foreignKey:'PTtagId',
-    as:'tags'
+    through: 'postTag',
+    foreignKey: 'PT_postId',
+    as: 'tags'
 })
 db.tag.belongsToMany(db.post, {
-    through:'postTag',
-    foreignKey:'PTpostId',
-    as:'tPosts'
+    through: 'postTag',
+    foreignKey: 'PT_tagId',
+    as: 'tPosts'
 })
 
 
 //POST && SKILL VERSION *****
 db.post.belongsToMany(db.skillVersion, {
-    through:'postSkill',
-    foreignKey:'PSKskillVersionId',
-    as:'skillVersions'
+    through: 'postSkill',
+    foreignKey: 'PSK_postId',
+    as: 'postSkillVersions'
 })
 db.skillVersion.belongsToMany(db.post, {
-    through:'postSkill',
-    foreignKey:'PSKpostId',
-    as:'skPosts'
+    through: 'postSkill',
+    foreignKey: 'PSK_skillVersionId',
+    as: 'skPosts'
 })
 
 

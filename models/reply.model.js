@@ -4,24 +4,42 @@ module.exports = (connection, sequelize) => {
     const Reply = connection.define("reply", {
         replyId: {
             type: sequelize.UUID,
-            primaryKey:true
+            defaultValue: sequelize.UUIDV4,
+            primaryKey: true
         },
         replyUserId: {
-            type: sequelize.INTEGER
+            type: sequelize.UUID
         },
-        replyBody:{
-            type:sequelize.TEXT
+        replyBody: {
+            type: sequelize.TEXT
         },
-        replyGrade:{
-            type:sequelize.STRING
+        replyGrade: {
+            type: sequelize.STRING
         },
-        replyIsPost:{
-            type:sequelize.TINYINT
+        replyIsPost: {
+            type: sequelize.BOOLEAN
         },
-        replyPostOption:{
-            type:sequelize.TEXT
+        replyPostOption: {
+            type: sequelize.TEXT
         }
-    }
+    },
+        {
+            indexes: [
+                {
+                    using: 'BTREE',
+                    fields: ['replyId']
+                },
+                {
+                    using: 'BTREE',
+                    fields: ['replyUserId']
+                },
+                {
+                    using: 'BTREE',
+                    fields: ['replyIsPost']
+                },
+
+            ],
+        }
     )
     return Reply
 }

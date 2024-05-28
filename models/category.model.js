@@ -4,35 +4,27 @@ module.exports = (connection, sequelize) => {
     const Category = connection.define("category", {
         categoryId: {
             type: sequelize.UUID,
+            defaultValue: sequelize.UUIDV4,
             primaryKey: true
         },
         categoryUserId: {
-            type: sequelize.INTEGER,
-            // unique: {
-            //     args: true,
-            //     msg: 'این  نام قبلا استفاده شده است'
-            // }
+            type: sequelize.UUID,
         },
         categoryName: {
             type: sequelize.STRING,
-            unique: {
-                args: true,
-                msg: 'این  نام قبلا استفاده شده است'
-            }
         }
     }, {
         indexes: [
             {
                 using: 'BTREE',
-                field: ['categoryName']
+                fields: ['categoryName']
             },
+            {
+                unique:true,
+                fields:['categoryUserId','categoryName']
+            }
         ],
-        hooks: {
-            beforeCreate: async (_name) => {
-                _name.categoryName = _name.categoryName.toLowerCase()
-            },
 
-        }
     }
     )
     return Category

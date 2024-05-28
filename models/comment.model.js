@@ -4,10 +4,11 @@ module.exports = (connection, sequelize) => {
     const Comment = connection.define("comment", {
         commentId:{
             type:sequelize.INTEGER,
+            autoIncrement:true,
             primaryKey:true
         },
         commentUserId:{
-            type:sequelize.INTEGER,
+            type:sequelize.UUID,
         },
         commentPostId:{
             type:sequelize.INTEGER
@@ -18,6 +19,27 @@ module.exports = (connection, sequelize) => {
         commentBody:{
             type:sequelize.TEXT
         }
+    },
+    {
+        indexes: [
+            {
+                using: 'BTREE',
+                fields: ['commentId']
+            },
+            {
+                using: 'BTREE',
+                fields: ['commentReferenceId']
+            },
+            {
+                using: 'BTREE',
+                fields: ['commentUserId']
+            },
+            {
+                using: 'BTREE',
+                fields: ['commentPostId']
+            },
+           
+        ],
     }
     )
     return Comment

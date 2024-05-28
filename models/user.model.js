@@ -4,15 +4,17 @@ module.exports = (connection, sequelize) => {
     const User = connection.define("user", {
         userId: {
             type: sequelize.UUID,
+            defaultValue: sequelize.UUIDV4,
             primaryKey: true
         },
         userEmail: {
             type: sequelize.STRING,
-            unique: {
-                args: true,
-                msg: 'این  نام قبلا استفاده شده است'
-            }
-            // allowNull: false,
+            validate: {
+                isEmail: {
+                    args: true,
+                    msg: 'this email is not valid'
+                }
+            },
         },
         userJobTitle: {
             type: sequelize.STRING
@@ -61,36 +63,29 @@ module.exports = (connection, sequelize) => {
         },
         userProfile: {
             type: sequelize.TEXT
+        },
+        userMobile:{
+            type:sequelize.STRING
         }
     }, {
         indexes: [
             {
-                using:'BTREE',
-                field:['userEmail']
+                using: 'BTREE',
+                fields: ['userEmail']
             },
             {
-                using:'BTREE',
-                field:['userJobTitle']
+                using: 'BTREE',
+                fields: ['userJobTitle']
             },
             {
-                using:'BTREE',
-                field:['userName']
+                using: 'BTREE',
+                fields: ['userName']
             },
             {
-                using:'BTREE',
-                field:['userCompany']
-            },
-            {
-                using:'BTREE',
-                field:['userProfile']
+                using: 'BTREE',
+                fields: ['userCompany']
             },
         ],
-        hooks: {
-            beforeCreate:async(_email)=> {
-                _email.userEmail=_email.userEmail.toLowerCase()
-            },
-            
-        }
     }
     )
     return User

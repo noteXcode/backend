@@ -2,19 +2,37 @@
 
 module.exports = (connection, sequelize) => {
     const ReportComment = connection.define("reportComment", {
-        RCid: {
+        RC_id: {
             type: sequelize.UUID,
+            defaultValue: sequelize.UUIDV4,
             primaryKey:true
         },
-        RCcommentId: {
+        RC_commentId: {
             type: sequelize.INTEGER
         },
-        RCuserId:{
-            type:sequelize.INTEGER
+        RC_userId:{
+            type:sequelize.UUID
         },
-        RCtext:{
+        RC_text:{
             type:sequelize.TEXT
         }
+    },
+    {
+        indexes: [
+            {
+                using: 'BTREE',
+                fields: ['RC_userId']
+            },
+            {
+                using: 'BTREE',
+                fields: ['RC_commentId']
+            },
+            {
+                using: 'BTREE',
+                fields: ['RC_id']
+            },
+           
+        ],
     }
     )
     return ReportComment

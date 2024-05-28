@@ -4,27 +4,26 @@ module.exports = (connection, sequelize) => {
     const Role = connection.define("role", {
         roleId: {
             type: sequelize.UUID,
+            defaultValue: sequelize.UUIDV4,
             primaryKey: true
         },
         roleName: {
             type: sequelize.STRING,
             unique: {
                 args: true,
-                msg: 'این  نام قبلا استفاده شده است'
-            }
+                msg: 'this name has already been used'
+            },
+            set(value) {
+                this.setDataValue('roleName', value.trim().toLowerCase())
+            },
         }
     }, {
         indexes: [
             {
                 using: 'BTREE',
-                field: ['roleName']
+                fields: ['roleName']
             },
         ],
-        hooks: {
-            beforeCreate: async (_name) => {
-                _name.roleName = _name.roleName.toLowerCase()
-            },
-        }
     }
     )
     return Role
