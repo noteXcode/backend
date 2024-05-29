@@ -9,6 +9,12 @@ module.exports = (connection, sequelize) => {
         },
         tagText:{
             type:sequelize.TEXT
+        },
+        tagUserId:{
+            type:sequelize.UUID
+        },
+        tagIsActive:{
+            type:sequelize.BOOLEAN
         }
     },
     {

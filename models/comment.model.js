@@ -18,6 +18,9 @@ module.exports = (connection, sequelize) => {
         },
         commentBody:{
             type:sequelize.TEXT
+        },
+        commentIsActive:{
+            type:sequelize.BOOLEAN
         }
     },
     {

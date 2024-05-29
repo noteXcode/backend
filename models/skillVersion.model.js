@@ -11,6 +11,12 @@ module.exports = (connection, sequelize) => {
       },
       SV_version:{
         type:sequelize.STRING
+      },
+      SV_userId:{
+        type:sequelize.UUID
+      },
+      SV_isActive:{
+        type:sequelize.BOOLEAN
       }
     },
     {

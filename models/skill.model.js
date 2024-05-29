@@ -19,6 +19,12 @@ module.exports = (connection, sequelize) => {
         },
         skillTypeId: {
             type: sequelize.UUID
+        },
+        skillUserId:{
+            type: sequelize.UUID
+        },
+        skillIsActive:{
+            type: sequelize.BOOLEAN
         }
     }, {
         indexes: [

@@ -13,9 +13,9 @@ module.exports = {
     },
     BAD_REQUEST_400: {
         'error_operation': 'the Operation successfully completed.',
-        'error_input': 'Please enter all the fields',
+        'error_input': 'Please enter all the necessary fields',
         'illegal_info': 'مقدار وارده غیر مجاز است',
-        'not_found': 'موردی با این مشخصات یافت نشد',
+        'not_found': 'No users with this specification found',
         'enter_permission': 'لطفا مجوز را وارد کنید',
         'duplicate_info': 'اطلاعات وارد شده تکراری می باشد',
         'duplicate_file_name': 'نام فایل تکراری است',

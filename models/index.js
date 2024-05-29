@@ -33,7 +33,7 @@ db.task = require('./task.model')(Connection, Sequelize);
 
 db.reply = require('./reply.model')(Connection, Sequelize);
 
-
+db.verify=require('./verify.model')(Connection, Sequelize);
 
 
 //MODELS RELATIONS*********
@@ -48,7 +48,7 @@ db.user.belongsToMany(db.role, {
 db.role.belongsToMany(db.user, {
     through: 'userRole',
     foreignKey: 'UR_roleId',
-    as: 'users'
+    as: 'roleUser'
 });
 
 
@@ -65,10 +65,34 @@ db.user.belongsToMany(db.user, {
 })
 
 
-//POST && USER ******
+//USER && SKILL *****
+db.user.hasMany(db.skill,{
+    foreignKey:"skillUserId",
+    as:"usersSkill",
+    onDelete:'no Action'
+})
+db.skill.belongsTo(db.user,{
+    foreignKey:"skillUserId",
+    as:"skillUser"
+})
+
+
+// USER && SKILL VERSION *****
+db.user.hasMany(db.skillVersion,{
+    foreignKey:"SV_userId",
+    as:"userSkillVersions",
+    onDelete:'no Action'
+})
+db.skillVersion.belongsTo(db.user,{
+    foreignKey:"SV_userId",
+    as:"skillVersionUsers"
+})
+
+
+//USER && POST ******
 db.user.hasMany(db.post,{
     foreignKey:"postUserId",
-    as:"userPost"
+    as:"userPosts"
 })
 db.post.belongsTo(db.user,{
     foreignKey:"postUserId",
@@ -76,7 +100,7 @@ db.post.belongsTo(db.user,{
 })
 
 
-//SKILL AND SKILLVERSION *****
+//SKILL && SKILLVERSION *****
 db.skill.hasMany(db.skillVersion,{
     foreignKey:"SV_skillId",
     as:"skills"
@@ -87,7 +111,7 @@ db.skillVersion.belongsTo(db.skill,{
 })
 
 
-//TASK AND USER *****
+//TASK && USER *****
 db.user.hasMany(db.task,{
     foreignKey:"taskUserId",
     as:"userTasks"
@@ -98,14 +122,14 @@ db.task.belongsTo(db.user,{
 })
 
 
-//REPLY AND USER *****
+//REPLY && USER *****
 db.user.hasMany(db.reply,{
     foreignKey:"replyUserId",
     as:"userReply"
 })
 db.reply.belongsTo(db.user,{
     foreignKey:"replyUserId",
-    as:"replies"
+    as:"replyUser"
 })
 
 
@@ -113,12 +137,12 @@ db.reply.belongsTo(db.user,{
 db.comment.belongsToMany(db.user, {
     through: 'commentMention',
     foreignKey: 'CM_commentId',
-    as: 'commentUsers'
+    as: 'mentionUsers'
 })
 db.user.belongsToMany(db.comment, {
     through: 'commentMention',
     foreignKey: 'CM_userId',
-    as: 'usersComment'
+    as: 'usersMention'
 })
 
 
@@ -127,12 +151,12 @@ db.user.belongsToMany(db.comment, {
 db.comment.belongsToMany(db.user, {
     through: 'reportComment',
     foreignKey: 'RC_commentId',
-    as: 'rpCommentUsers'
+    as: 'reportCommentUsers'
 })
 db.user.belongsToMany(db.comment, {
     through: 'reportComment',
     foreignKey: 'RC_userId',
-    as: 'rpUserComments'
+    as: 'userReportComments'
 })
 
 
@@ -140,25 +164,25 @@ db.user.belongsToMany(db.comment, {
 db.post.belongsToMany(db.user, {
     through: 'reportPost',
     foreignKey: 'RP_postId',
-    as: 'rpPostUsers',
+    as: 'reportPostUsers',
 })
 db.user.belongsToMany(db.post, {
     through: 'reportPost',
     foreignKey: 'RP_userId',
     onDelete: 'NO ACTION',
-    as: 'rpUserPosts'
+    as: 'userReportPosts'
 })
 
 //USER && POST (POST MENTION)*****
 db.post.belongsToMany(db.user, {
     through: 'postMention',
     foreignKey: 'PM_postId',
-    as: 'mentionUsers',
+    as: 'postMentionUsers',
 })
 db.user.belongsToMany(db.post, {
     through: 'postMention',
     foreignKey: 'PM_userId',
-    as: 'mentionPosts',
+    as: 'userPostMentions',
     onDelete: 'NO ACTION',
 })
 
@@ -166,12 +190,12 @@ db.user.belongsToMany(db.post, {
 db.post.belongsToMany(db.user, {
     through: 'postLike',
     foreignKey: 'PL_postId',
-    as: 'postUsers',
+    as: 'likeUsers',
 })
 db.user.belongsToMany(db.post, {
     through: 'postLike',
     foreignKey: 'PL_userId',
-    as: 'userLikePost',
+    as: 'usersLikes',
     onDelete: 'NO ACTION',
 })
 
@@ -180,12 +204,12 @@ db.user.belongsToMany(db.post, {
 db.post.belongsToMany(db.user, {
     through: 'postSave',
     foreignKey: 'PS_postId',
-    as: 'postSaveUser',
+    as: 'saveUsers',
 })
 db.user.belongsToMany(db.post, {
     through: 'postSave',
     foreignKey: 'PS_userId',
-    as: 'userSavePosts',
+    as: 'userSaves',
     onDelete: 'NO ACTION',
 })
 
@@ -193,7 +217,7 @@ db.user.belongsToMany(db.post, {
 db.post.belongsToMany(db.user, {
     through: 'postView',
     foreignKey: 'PV_postId',
-    as: 'vUsers'
+    as: 'viewUsers'
 })
 db.user.belongsToMany(db.post, {
     through: 'postView',
@@ -215,6 +239,18 @@ db.category.belongsToMany(db.post, {
     as: 'catPosts'
 })
 
+
+//USER && TAGS *****
+db.user.hasMany(db.tag,{
+    foreignKey: 'tagUserId',
+    as:"userTags",
+    onDelete:'no Action'
+})
+db.tag.belongsTo(db.user,{
+    foreignKey: 'tagUserId',
+    as:"tagUsers"
+})
+
 //POST && TAG *****
 db.post.belongsToMany(db.tag, {
     through: 'postTag',
@@ -224,7 +260,7 @@ db.post.belongsToMany(db.tag, {
 db.tag.belongsToMany(db.post, {
     through: 'postTag',
     foreignKey: 'PT_tagId',
-    as: 'tPosts'
+    as: 'tagPosts'
 })
 
 
@@ -237,7 +273,7 @@ db.post.belongsToMany(db.skillVersion, {
 db.skillVersion.belongsToMany(db.post, {
     through: 'postSkill',
     foreignKey: 'PSK_skillVersionId',
-    as: 'skPosts'
+    as: 'skillVersionPosts'
 })
 
 
