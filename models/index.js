@@ -65,6 +65,19 @@ db.user.belongsToMany(db.user, {
 })
 
 
+// USER && USER (BLOCK)*****
+db.user.belongsToMany(db.user, {
+    through: 'blockUser',
+    foreignKey: 'blockUserId',
+    as: 'userBlock'
+})
+db.user.belongsToMany(db.user, {
+    through: 'blockUser',
+    foreignKey: 'blockBlockedId',
+    as: 'blockedUsers'
+})
+
+
 //USER && SKILL *****
 db.user.hasMany(db.skill,{
     foreignKey:"skillUserId",

@@ -1,6 +1,6 @@
 const db = require('../models')
 const Connection = db.connection
-const bcrypt = require('bcryptjs')
+// const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const config = require('../configs/auth.config')
 const User = db.user
@@ -25,6 +25,21 @@ async function MakeToken(_req, _result) {
 }
 
 
+async function MakeVerify(_len = 4) {
+    if (_len > 7 || _len < 4)
+      _len = 4
+    let verifyCode = getRandomIntInclusive(Math.pow(10, _len - 1), Math.pow(10, _len) - 1)
+    return verifyCode
+  }
+  
+  function getRandomIntInclusive(min, max) {
+    min = Math.ceil(min)
+    max = Math.floor(max)
+    //The maximum is inclusive and the minimum is inclusive
+    return Math.floor(Math.random() * (max - min) + min)
+  }
+
+
 
 
 
@@ -33,6 +48,7 @@ async function MakeToken(_req, _result) {
 
 const userFuncs = {
     MakeToken,
+    MakeVerify
     
 }
 module.exports = userFuncs

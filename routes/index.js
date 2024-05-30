@@ -1,5 +1,5 @@
 
 
 module.exports=(app)=>{
-    const user = require('./user.route')(app);
+    const user = require('./user.routes')(app);
 }

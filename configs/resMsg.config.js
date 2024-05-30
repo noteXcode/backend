@@ -9,10 +9,11 @@ let HttpStatusCode = {
 
 module.exports = {
     OK_200 :{
-       "success":"" 
+       "success":"the Operation successfully completed." ,
+       "sendActiveCode":"active code sent to your email." ,
     },
     BAD_REQUEST_400: {
-        'error_operation': 'the Operation successfully completed.',
+        'error_operation': '',
         'error_input': 'Please enter all the necessary fields',
         'illegal_info': 'مقدار وارده غیر مجاز است',
         'not_found': 'No users with this specification found',

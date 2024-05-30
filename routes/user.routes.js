@@ -12,6 +12,8 @@ module.exports = (app) => {
 		next()
 	})
 	app.post("/user/register", controller.register)
+	app.post("/user/activeuser/:userId", controller.activeUser)
 	app.post("/user/login", controller.login)
+	app.get("/user/list",controller.list)
 
 }

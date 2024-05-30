@@ -1,33 +1,33 @@
 
 module.exports = (connection, sequelize) => {
 	const Verify = connection.define('verify', {
-		id: {
-			type: sequelize.UUID,
-			defaultValue: sequelize.UUIDV4,
+		verifyId: {
+			type: sequelize.INTEGER,
+			autoIncrement:true,
 			primaryKey: true
 		},
-		userId: {
+		verifyUserId: {
 			type: sequelize.UUID,
 		},
 		verifyCode: {
-			type: sequelize.STRING,
+			type: sequelize.STRING(20),
 		},
 		verifyType: {
-			type: sequelize.STRING,
-		}
-		, effectOn: { 
-			type: sequelize.UUID 
+			type: sequelize.STRING(50),
+		},
+		verifyEffectOn: { 
+			type: sequelize.STRING(50) 
 		}
 	},
 		{
 			indexes: [
 				{
 					using: 'BTREE',
-					fields: ['id']
+					fields: ['verifyId']
 				},
 				{
 					using: 'BTREE',
-					fields: ['userId']
+					fields: ['verifyUserId']
 				}
 			]
 		}
