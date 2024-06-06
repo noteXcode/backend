@@ -1,10 +1,8 @@
-const db = require('../models');
-const User = db.user;
-const resMsg = require('../configs/resMsg.config');
-const userFuncs = require('../functions/userFuncs');
+const { user: User, op: Op, verify: Verify, connection: Connection, sequelize } = require('../models')
+const Funcs = require('../functions/funcs');
 const mailFuncs = require('../functions/mailFuncs');
-const Verify = db.verify;
-const Connection = db.connection;
+
+const { HttpStatusCode, ResponseType, ResponseCode, ResponseMessages } = require('../configs/resMsg.config')
 
 exports.register = async (_req, _res) => {
     _req.body.userIsActive = false
@@ -13,39 +11,36 @@ exports.register = async (_req, _res) => {
             let existUser = await User.findOne({ where: { userEmail: _req.body.userEmail } })
             if (!existUser) {
                 let user = await User.create(_req.body)
-                let verifyCode = await userFuncs.MakeVerify(6)
+                let verifyCode = await Funcs.MakeVerify(6)
                 if (verifyCode) {
-                    // console.log('enteredddddddddddddddddddd');
                     let userEmail = _req.body.userEmail
                     let userName = _req.body.userFirstName + ' ' + _req.body.userLastName
                     await mailFuncs.SendVerifyMail(userEmail, userName, verifyCode)
-                   let x= await Verify.create({
-                        verifyCode: verifyCode+'',
+                    let x = await Verify.create({
+                        verifyCode: verifyCode + '',
                         verifyUserId: user.userId,
                         verifyType: "register"
                     })
-                    console.log('xxxxx',x);
-                    _res.status(200).send({ message: resMsg.OK_200.sendActiveCode })
+                    console.log('xxxxx', x);
+                    Funcs.Response200(_res, user)
                 } else {
-                    console.log('ggggg',verifyCode);
-                    _res.status(500).send({ message: resMsg.ERROR_500.makeVerifyCode })
+                    Funcs.Response400(_res, ResponseCode.internal_error, ResponseMessages.otp_send_error)
                 }
             } else {
-                _res.status(400).send({ message: 'this user is already exist (with this email)' })
+                Funcs.Response400(_res, ResponseCode.duplicate_record, ResponseMessages.user_is_exist)
             }
         } catch (_error) {
-            console.log("🚀 ~ exports.register= ~ _error:🤢", _error)
-            _res.status(500).send({ message: resMsg.INTERNAL_SERVER_500.server_error, _error })
+            Funcs.Response500(_res)
         }
     } else {
-        _res.status(400).send({ message: resMsg.BAD_REQUEST_400.error_input })
+        Funcs.Response400(_res, ResponseCode.error_input, ResponseMessages.error_input)
     }
 }
 
 exports.activeUser = async (_req, _res) => {
     if (_req.params.userId) {
         if (_req.body.verifyCode) {
-            await Verify.destroy({ where: { createdAt: { [Op.lt]: new Date(new Date() - 2 * 60 * 1000) } } })
+            await Verify.destroy({ where: { createdAt: { [Op.lt]: new Date(new Date() - 10 * 60 * 1000) } } })
             Verify.findOne({
                 where: {
                     verifyCode: _req.body.verifyCode,
@@ -54,25 +49,31 @@ exports.activeUser = async (_req, _res) => {
             })
                 .then(async _result => {
                     if (_result) {
+                        //check if number is true then go and find USER 
                         //TODO
-                        let test = await Connection.query(``, {
-                            replacements: { userId: _req.params.id },
-                            // type: db.Sequelize.QueryTypes.SELECT
-                        })
+                    //    Verify.findByPk(_req.params.userId)
+                        console.log('tesssstttt', test);
+                        _result.userIsActive = true
+                        if (_result.userIsActive) {
+                            let token = await Funcs.MakeToken(_req, _result)
+                            Funcs.Response200(_res, _result)
+                        }
+                        else
+                            Funcs.Response400(_res, ResponseCode.error_input, ResponseMessages.user_is_not_active)
                         _res.status(200).send(test)
                     }
                     else
-                        _res.status(409).send({ message: 'the verification code doesn`t match' })
+                        Funcs.Response400(_res, ResponseCode.error_input, ResponseMessages.verification_code_not_match)
                 })
                 .catch((_error) => {
-                    _res.status(500).send({ message: resMsg.INTERNAL_SERVER_500.server_error, _error })
+                    console.log('erooorrrr🤷‍♀️', _error);
+                    Funcs.Response500(_res)
                 })
         }
         else
-            _res.status(400).send({ message: 'error in verifyCode' })
-
+            Funcs.Response400(_res, ResponseCode.error_input, ResponseMessages.error_input)
     } else {
-        _res.status(400).send({ message: 'unknown user!!' })
+        Funcs.Response400(_res, ResponseCode.error_input, ResponseMessages.error_input)
     }
 }
 
@@ -80,7 +81,7 @@ exports.activeUser = async (_req, _res) => {
 exports.login = async (_req, _res) => {
     if (_req.body.userEmail && _req.body.userEmail.length > 0 && _req.body.userPassword && _req.body.userPassword.length > 0) {
 
-        User.findOne({ userEmail: _req.body.userEmail })
+        User.findOne({ userEmail: _req.body.userEmail, userPassword: _req.body.userPassword })
             .then(async (_result) => {
                 if (_result) {
                     let result = JSON.parse(JSON.stringify(_result))
@@ -90,21 +91,21 @@ exports.login = async (_req, _res) => {
                     delete result.lastLoginIp
                     delete result.isActive
                     if (_result.userIsActive) {
-                        let token = await userFuncs.MakeToken(_req, _result)
-                        _res.status(200).send({ message: 'your are entered', token: token, result })
+                        let token = await Funcs.MakeToken(_req, _result)
+                        Funcs.Response200(_res, _result)
                     }
                     else
-                        _res.status(400).send({ message: 'you are not active' })
+                        Funcs.Response400(_res, ResponseCode.error_input, ResponseMessages.user_is_not_active)
                 }
                 else {
                     _res.status(400).send({ message: resMsg.BAD_REQUEST_400.not_found })
                 }
             })
             .catch((_error) => {
-                _res.status(500).send({ message: resMsg.INTERNAL_SERVER_500.server_error, _error })
+                Funcs.Response500(_res)
             })
     } else {
-        _res.status(400).send({ message: resMsg.BAD_REQUEST_400.error_input })
+        Funcs.Response400(_res, ResponseCode.error_input, ResponseMessages.error_input)
     }
 }
 
