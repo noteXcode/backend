@@ -10,22 +10,28 @@ let origins = {
 }
 
 
-// USAGE SECTION*****
-app.use(express.json())
-app.use(cors(origins))
+
 
 
 // OPERTAIONS (MAKE TABLES AND...)*****
 db.connection.sync({
-    // alter:true,
+    alter:true,
 	// { drop: false },
-    force : true
+    // force : true
 }).then(async ()=>{
     // await initiall()
 }).catch((_error)=>{
     console.log('DB couldn`t create or change the tables content🎭🤢',_error);
 })
 
+
+// USAGE SECTION*****
+app.use(express.json())
+app.use(cors(origins))
+app.use(express.urlencoded({ extended: true }));
+
+
+require('./routes')(app)
 
 
 // test*****************
