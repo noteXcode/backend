@@ -93,3 +93,4 @@ sw.*
 /static/assets/config.json
 yarn.lock
 /yarn.lock
+/config.env

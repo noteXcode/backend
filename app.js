@@ -2,11 +2,11 @@ const db = require('./models');
 const express = require('express');
 const app = express()
 const cors = require('cors');
-
+require('dotenv').config({path:'./config.env'});
 
 //ORIGINS (WHICH SOURCES CAN CONNECT TO THIS PROJECT)*****
 let origins = {
-    origin: ['http://localhost:6000', 'https://localhost:6000', 'http://localhost:8000', 'http://localhost:8000']
+    origin: ['http://localhost:3001', 'https://localhost:6000', 'http://localhost:8000', 'http://localhost:8000']
 }
 
 
@@ -35,8 +35,8 @@ app.get("/welcome", async (_req, _res) => {
     })
 })
 
+require('./routes')(app);
 
-
-app.listen(4050, () => {
+app.listen(process.env.PORT, () => {
     console.log('you connected to NOTEX ✔😍');
 })
